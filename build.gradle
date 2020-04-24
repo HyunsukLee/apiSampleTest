@@ -1,0 +1,107 @@
+buildscript {
+	ext {
+		buildVersion = "0.0.1-SNAPSHOT"
+		springBootVersion = '1.5.9.RELEASE'
+	}
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+//create a single Jar with all dependencies
+/*
+jar {
+    baseName = "chatBot"
+    version = "${buildVersion}"
+    manifest {
+        attributes 'Title': 'Reqeust And Header Tester',
+                   'Version': 1.0,
+                   'Main-Class': 'com.example.chatBot.ChatBotApplication'
+    }
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+*/
+
+
+//plugins {
+//	id 'org.springframework.boot' version '1.5.8.RELEASE'
+//	id 'java'
+//}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+mainClassName = 'com.example.chatBot'
+
+group = 'com.example.chatBot'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+
+
+
+jar {
+    manifest {
+        attributes  'Title': 'My Application', 'Version': version, 'Main-Class': mainClassName
+    }
+    archiveName 'chatBot.jar'
+    dependsOn configurations.runtime
+    from {
+        configurations.compile.collect {it.isDirectory()? it: zipTree(it)}
+    }
+}
+ 
+/* 
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.10'
+}
+*/
+
+
+
+
+
+
+
+
+repositories {
+	mavenCentral()
+}
+
+configurations {
+	providedRuntime
+//	compileOnly {
+//		extendsFrom annotationProcessor
+//	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	runtimeOnly 'org.hsqldb:hsqldb'	
+	implementation 'com.graphql-java:graphql-spring-boot-starter:3.6.0'
+	implementation 'com.graphql-java:graphql-java-tools:3.2.0'
+	//implementation 'com.graphql-java:graphiql-spring-boot-starter:3.6.0'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+	compileOnly 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
+	runtime("org.springframework.boot:spring-boot-devtools:${springBootVersion}")
+	compile("org.springframework:springloaded:1.2.8.RELEASE")
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compileOnly("org.projectlombok:lombok:1.18.6")
+	annotationProcessor("org.projectlombok:lombok:1.18.6")	//<- gradle compile 시 lombok 으로 인한 간섭이 없도록 함
+}
+
